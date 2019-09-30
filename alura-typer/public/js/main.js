@@ -1,24 +1,39 @@
 var tempoInicial = $("#tempo-digitacao").text();
 var campo = $(".campo-digitacao");
 
-$(function() {
+$(function () {
     atualizaTamanhoFrase();
     inicializaContadores();
     inicializaCronometro();
     inicializaMarcadores();
     $("#botao-reiniciar").click(reiniciaJogo);
+    atualizaPlacar();
+
+    $("#usuarios").selectize({
+        create: true,
+        sortField: 'text'
+    });
+
+    $(".tooltip").tooltipster({
+        trigger: "custom"
+    });
 });
+
+function atualizaTempoInicial(tempo) {
+    tempoInicial = tempo;
+    $("#tempo-digitacao").text(tempo);
+}
 
 function atualizaTamanhoFrase() {
     var frase = $(".frase").text();
-    var numPalavras  = frase.split(" ").length;
+    var numPalavras = frase.split(" ").length;
     var tamanhoFrase = $("#tamanho-frase");
 
     tamanhoFrase.text(numPalavras);
 }
 
 function inicializaContadores() {
-    campo.on("input", function() {
+    campo.on("input", function () {
         var conteudo = campo.val();
 
         var qtdPalavras = conteudo.split(/\S+/).length - 1;
@@ -30,8 +45,8 @@ function inicializaContadores() {
 }
 
 function inicializaMarcadores() {
-    var frase = $(".frase").text();
-    campo.on("input", function() {
+    campo.on("input", function () {
+        var frase = $(".frase").text();
         var digitado = campo.val();
         var comparavel = frase.substr(0, digitado.length);
 
@@ -46,16 +61,16 @@ function inicializaMarcadores() {
 }
 
 function inicializaCronometro() {
-    var tempoRestante = $("#tempo-digitacao").text();
-    campo.one("focus", function() {
-    	var cronometroID = setInterval(function() {
-    		tempoRestante--;
-    		$("#tempo-digitacao").text(tempoRestante);
-    		if (tempoRestante < 1) {
+    campo.one("focus", function () {
+        var tempoRestante = $("#tempo-digitacao").text();
+        var cronometroID = setInterval(function () {
+            tempoRestante--;
+            $("#tempo-digitacao").text(tempoRestante);
+            if (tempoRestante < 1) {
                 clearInterval(cronometroID);
                 finalizaJogo();
-    		}
-    	}, 1000);
+            }
+        }, 1000);
     });
 }
 
